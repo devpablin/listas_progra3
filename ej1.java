@@ -9,74 +9,154 @@ public class ej1 {
 	}
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		//nodo a,b,c,cab=null,d;
-		/*a= new nodo();
-		System.out.println("Direccion "+a);
-		a.dato=7;
-		a.sgte=null;
-		System.out.println("Direccion: "+a+" Dato: "+a.dato+ " Dir sgte: "+a.sgte);
-		b=a;
-		System.out.println("Direccion: "+b+" Dato: "+b.dato+ " Dir sgte: "+b.sgte);
-		c=new nodo();
-		c.dato=a.dato;
-		c.sgte = a;
-		System.out.println("Direccion: "+c+" Dato: "+c.dato+ " Dir sgte: "+c.sgte);*/
-		
-		
-		//PARA crear una lista y recorrerla
-		/*for (int i = 1; i <= 10; i++) { //
-			d=new nodo();
-			d.dato=i;
-			d.sgte=cab;
-			cab=d;
-		}
-		c=cab;
-		while(c!=null){
-			System.out.println("Direccion: "+c+" Dato: "+c.dato+" Dir sgte: "+c.sgte);
-			c=c.sgte;
-		}*/
-		
-		
 		nodo cab = null;
 		int opcion;
 		do{
-			System.out.println("1. add 2. list 3. sumatoria 4. maximo 5. minimo 6. dividir 7. salir");
+			System.out.println("1. añadir a la cabecera \n2.añadir a la cola\n3.listado \n"
+					+ "4. agregar al centro \n5.agregar en la posicion x \n6. agregar antes del nodo que tiene dato x \n7. agregar despues del NODO QUE TIENE DATO X \n8.salir");
 			opcion=leer("su opcion");
 			switch(opcion){
 			case 1:
-				cab=add(cab);
+				cab=addcab(cab);
 				break;
 			case 2:
-				listado(cab);
+				addcola(cab);
 				break;
 			case 3:
-				int s=sumatoria(cab);
-				System.out.println(s);
-				break;
-			case 4:
-				int max = maximo(cab);
-				System.out.println(max);
-				break;
-			case 5:
-				int min = minimo(cab);
-				System.out.println(min);
-				break;
-			case 6:
-				cab=dividir(cab);
 				listado(cab);
 				break;
+			case 4:
+				addcentro(cab);
+				break;
+			case 5:
+				cab=addx(cab,leer("posicion?"));
+				break;
+			case 6:
+				cab=addantesn(cab, leer("dato?"));
+				break;
+			case 7:
+				cab=adddespsn(cab,leer("dato?"));
 				
 			}
-		}while(opcion!=7);
+		}while(opcion!=8);
 		
 	}
-	public static nodo add (nodo x){
+	public static nodo addcab (nodo x){
 		nodo aux= new nodo();
 		aux.sgte=x;
 		aux.dato=leer("dato?");
 		x=aux;
 		return aux;
+	}
+	public static void addcola (nodo x){
+		nodo c;
+		nodo nuevo=new nodo();
+		nuevo.dato=leer("dato?");
+		nuevo.sgte=null;
+		if (x==null) {
+			x=nuevo;
+		}else{
+			c=x;
+			while(c.sgte!=null){
+				c=c.sgte;
+			}
+			c.sgte=nuevo;
+		}	
+	}
+	public static void addcentro (nodo x){
+		int n= contar(x);
+		if(n>=2){
+			nodo nuevo=new nodo();
+			nuevo.dato=leer("dato?");
+			nodo c;
+			c=x;
+			for(int i=1;i<n/2;i++){
+				c=c.sgte;
+			}
+			nuevo.sgte=c.sgte;
+			c.sgte=nuevo;
+		}
+		else{
+			System.out.println("No se puede añadir al centro");
+		}
+		
+		
+	}
+	public static nodo addx (nodo x,int n){
+		int y = contar(x);
+		nodo c;
+		if(n<=y){
+			nodo nuevo=new nodo();
+			nuevo.dato=leer("dato?");
+			if(n==1){
+				nuevo.sgte=x;
+				x=nuevo;
+			}else{
+				c=x;
+				for(int i=1;i<n-1;i++){
+					c=c.sgte;
+				}
+				nuevo.sgte=c.sgte;
+				c.sgte=nuevo;
+			}
+		}else{
+			System.out.println("No existe esa posicion en la lista");
+		}
+		return x;
+		
+		
+	}
+	public static nodo addantesn (nodo cab,int n){
+		nodo q,x,t=null;
+		boolean band=true;
+		q=cab;
+		do{
+			if(q.sgte!=null){
+				t=q;q=q.sgte;
+			}
+			else{
+				band=false;
+			}
+		}while(q.dato!=n&&band==true);
+		if(band){
+			x=new nodo();
+			x.dato=leer("dato nuevo?");
+			if(cab==q){
+				x.sgte=cab;
+				cab=x;
+			}else{
+				t.sgte=x;
+				x.sgte=q;
+			}
+		}
+		return cab;
+		
+	}
+	public static nodo adddespsn (nodo x,int n){
+		nodo c;
+		if(x==null){
+			System.out.println("no existe lista");
+		}else{
+			if(x.dato==n){
+				nodo nuevo = new nodo();
+				nuevo.dato=leer("dato?");
+				nuevo.sgte=x.sgte;
+				x.sgte=nuevo;
+			}else{
+				c=x;
+				while(c.sgte!=null){
+					if(c.dato==n){
+						nodo nuevo = new nodo();
+						nuevo.dato=leer("dato?");
+						nuevo.sgte=c.sgte;
+						c.sgte=nuevo;
+					}
+					c=c.sgte;
+				}
+			}
+		}
+		return x;
+		
 	}
 	public static void listado (nodo z){
 		while(z!=null){
@@ -90,40 +170,7 @@ public class ej1 {
 		return lee.nextInt();
 		
 	}
-	public static int sumatoria (nodo z){
-		int sum=0;
-		while(z!=null){
-			sum+=z.dato;
-			z=z.sgte;
-		}
-		return sum;
-	}
-	public static int maximo (nodo z){
-		int sum=0;
-		if (z!=null) {
-			while(z!=null){
-				if (sum<z.dato) {
-					sum=z.dato;
-				}
-				z=z.sgte;
-			}
-			
-		}else{
-			System.out.println("No existe");
-		}
-		return sum;
-		
-	}
-	public static int minimo (nodo z){
-		int min=1000000;
-		while(z!=null){
-			if (min>z.dato) {
-				min=z.dato;
-			}
-			z=z.sgte;
-		}
-		return min;
-	}
+	
 	public static int contar (nodo z){
 		int c=0;
 		while(z!=null){
@@ -132,20 +179,6 @@ public class ej1 {
 		}
 		return c;
 	}
-	public static nodo dividir (nodo z){
-		System.out.println("\n\n");
-		int x=contar(z);
-		if(x%2==0){
-			x/=2;
-		}else{
-			x=x/2+1;
-		}
-		for(int i=0;i<x;i++){
-			z=z.sgte;
-		}
-		z.sgte=null;
-		z=z.sgte;
-		return z;
-	}
+	
 
 }
